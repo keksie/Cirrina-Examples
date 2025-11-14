@@ -1,0 +1,8 @@
+radiatorOn = "radiatorOn"
+radiatorOff = "radiatorOff"
+lampOn = "lampOn"
+lampOff = "lampOff"
+personEnters = "personEnters"
+personLeaves = "personLeaves"
+roomUnoccupied = "roomUnoccupied"
+roomOccupied = "roomOccupied"

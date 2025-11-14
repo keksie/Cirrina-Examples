@@ -1,0 +1,90 @@
+import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
+
+import "events.pkl"
+
+const noPersonInRoom = new Csml.Guard {
+	expression = "peopleCount == 0"
+}
+
+const incrementPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "peopleCount + 1"
+	}
+}
+
+const decrementPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "peopleCount - 1"
+	}
+}
+
+const resetPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "0"
+	}
+}
+
+const raiseRoomOccupiedEvent = new Csml.RaiseAction {
+	event {
+		name    = events.roomOccupied
+		channel = "global"
+	}
+}
+
+const raiseRoomUnoccupiedEvent = new Csml.RaiseAction {
+	event {
+		name    = events.roomUnoccupied
+		channel = "global"
+	}
+}
+
+open class RoomStateMachine extends Csml.StateMachineDescription {
+	name = "Room"
+	localContext {
+		variables {
+			new {
+				name = "peopleCount"
+				value = "0"
+			}
+		}
+	}
+
+	states {
+		new {
+			name = "unoccupied"
+			initial = true
+			entry {
+				resetPeopleCount
+				raiseRoomUnoccupiedEvent
+			}
+			on {
+				new {
+					event = events.personEnters
+					target = "occupied"
+				}
+			}
+		}
+		new {
+			name = "occupied"
+			entry {
+				incrementPeopleCount
+				raiseRoomOccupiedEvent
+			}
+			on {
+				new {
+					event = events.personLeaves
+					actions { decrementPeopleCount }
+					target = "unoccupied"
+					guards { noPersonInRoom }
+				}
+				new {
+					event = events.personEnters
+					actions { incrementPeopleCount }
+				}
+			}
+		}
+	}
+}

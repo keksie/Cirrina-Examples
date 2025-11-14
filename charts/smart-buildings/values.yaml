@@ -1,0 +1,21 @@
+namespace: default
+
+nats:
+  jetstream:
+    enabled: true
+
+cirrina:
+  image:
+    tag: latest
+    pullPolicy: Always
+    repository: k3ksie/cirrina
+  appPath: "https://raw.githubusercontent.com/keksie/Cirrina-Examples/refs/heads/develop/smart-buildings/main.pkl"
+  serviceBindingsPath: "https://raw.githubusercontent.com/keksie/Cirrina-Examples/refs/heads/develop/smart-buildings/services.pkl"
+  instantiate: bathroom
+  natsEventUrl: nats://smart-buildings-nats:4222/
+  natsContextUrl: nats://smart-buildings-nats:4222/
+  extraEnvVars:
+    - name: OTEL_METRIC_EXPORT_INTERVAL
+      value: "1000"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: http://smart-buildings-telegraf:4317/

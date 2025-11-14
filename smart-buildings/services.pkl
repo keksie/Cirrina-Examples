@@ -1,0 +1,40 @@
+amends "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/ServiceImplementationBindings.pkl"
+
+bindings {
+	new HttpServiceImplementationBinding {
+		name = "lampOn"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/lamp/on"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "lampOff"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/lamp/off"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "radiatorOn"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/radiator/on"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "radiatorOff"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/radiator/off"
+		method = "POST"
+	}
+}
