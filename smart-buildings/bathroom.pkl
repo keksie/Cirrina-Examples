@@ -1,4 +1,3 @@
-amends "room.pkl"
 import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
 
 import "radiator.pkl"
