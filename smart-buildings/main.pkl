@@ -1,10 +1,10 @@
 amends "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
 import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
 
-import "bathroom.pkl"
+import "radiator.pkl"
 
-name = "bathroom"
+name = "example"
 version = "3.0.0"
 stateMachines {
-	new bathroom.BathroomStateMachine {}
+	new radiator.RadiatorStateMachine {}
 }
