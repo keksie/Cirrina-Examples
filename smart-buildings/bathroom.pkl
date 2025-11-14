@@ -4,8 +4,6 @@ import "radiator.pkl"
 import "room.pkl"
 import "lamp.pkl"
 
-amends "room.pkl"
-
 class BathroomStateMachine extends room.RoomStateMachine {
 	name = "bathroom"
 	stateMachines {
