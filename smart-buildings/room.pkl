@@ -42,7 +42,7 @@ const raiseRoomUnoccupiedEvent = new Csml.RaiseAction {
 }
 
 open class RoomStateMachine extends Csml.StateMachineDescription {
-	name = "Room"
+	name = "room"
 	localContext {
 		variables {
 			new {

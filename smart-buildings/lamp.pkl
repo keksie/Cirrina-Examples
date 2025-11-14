@@ -11,7 +11,7 @@ const offAction = new Csml.InvokeActionDescription {
 }
 
 class LampStateMachine extends Csml.StateMachineDescription {
-	name = "Lamp"
+	name = "lamp"
 	states {
 		new {
 			name = "off"

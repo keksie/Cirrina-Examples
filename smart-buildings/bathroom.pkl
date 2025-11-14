@@ -5,7 +5,7 @@ import "room.pkl"
 import "lamp.pkl"
 
 class BathroomStateMachine extends room.RoomStateMachine {
-	name = "Bathroom"
+	name = "bathroom"
 	stateMachines {
 		new radiator.RadiatorStateMachine {}
 		new lamp.LampStateMachine {}
