@@ -3,6 +3,7 @@ import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/ref
 import "events.pkl"
 import "rooms.pkl"
 import "floors.pkl"
+import "appliances.pkl"
 
 class SmallHouseStateMachine extends BuildingStateMachine {
 	name = "small_house"
