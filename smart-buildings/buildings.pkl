@@ -46,9 +46,6 @@ class FlatStateMachine extends BuildingStateMachine {
 				new rooms.BedroomStateMachine {
 					name = "master_bedroom"
 				}
-				new rooms.BedroomStateMachine {
-					name = "childrens_bedroom"
-				}
 				new rooms.LivingRoomStateMachine {}
 				new rooms.KitchenStateMachine {}
 				new rooms.BathroomStateMachine {}
