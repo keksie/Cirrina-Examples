@@ -84,7 +84,7 @@ class FloorStateMachine extends Csml.StateMachineDescription {
 					event = events.personLeavesFloor
 					actions { decrementPeopleCount }
 					target = "unoccupied"
-					guard { noPersonInFloor }
+					guards { noPersonInFloor }
 				}
 
 				new {
