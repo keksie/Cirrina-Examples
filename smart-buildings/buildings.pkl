@@ -1,0 +1,147 @@
+import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
+
+import "events.pkl"
+import "rooms.pkl"
+import "floors.pkl"
+
+class SmallHouseStateMachine extends BuildingStateMachine {
+	name = "small_house"
+	stateMachines {
+		new floors.FloorStateMachine {
+			stateMachines {
+				new rooms.LivingRoomStateMachine {}
+				new rooms.KitchenStateMachine {}
+				new rooms.HallwayStateMachine {}
+				new rooms.BathroomStateMachine {}
+			}
+		}
+
+		new floors.FloorStateMachine {
+			name = "first_floor"
+			localContext.variables.floor = "1"
+			stateMachines {
+				new rooms.HallwayStateMachine {}
+				new rooms.BedroomStateMachine {}
+				new rooms.BedroomStateMachine {}
+				new rooms.BedroomStateMachine {}
+				new rooms.BathroomStateMachine {}
+			}
+		}
+	}
+}
+
+class FlatStateMachine extends BuildingStateMachine {
+	name = "flat"
+	stateMachines {
+		new floors.FloorStateMachine {
+			stateMachines {
+				new rooms.BedroomStateMachine {
+					name = "master_bedroom"
+				}
+				new rooms.BedroomStateMachine {
+					name = "childrens_bedroom"
+				}
+				new rooms.LivingRoomStateMachine {}
+				new rooms.KitchenStateMachine {}
+				new rooms.BathroomStateMachine {}
+				new rooms.HallwayStateMachine {}
+				new rooms.PantryStateMachine {
+					stateMachines {
+						new appliances.WashingMachineStateMachine {
+							name = "grandmas_beloved_washing_machine"
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+const noPersonInBuilding = new Csml.Guard {
+	expression = "peopleCount == 0"
+}
+
+const incrementPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "peopleCount + 1"
+	}
+}
+
+const decrementPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "peopleCount - 1"
+	}
+}
+
+const resetPeopleCount = new Csml.AssignAction {
+	variable = new {
+		name = "peopleCount"
+		value = "0"
+	}
+}
+
+const raiseBuildingOccupiedEvent = new Csml.RaiseAction {
+	event {
+		name    = events.buildingOccupied
+		channel = "global"
+	}
+}
+
+const raiseBuildingUnoccupiedEvent = new Csml.RaiseAction {
+	event {
+		name    = events.buildingUnoccupied
+		channel = "global"
+	}
+}
+
+open class BuildingStateMachine extends Csml.StateMachineDescription {
+	name = "building"
+	localContext {
+		variables {
+			new {
+				name = "peopleCount"
+				value = "0"
+			}
+		}
+	}
+
+	states {
+		new {
+			name = "unoccupied"
+			initial = true
+			entry {
+				resetPeopleCount
+				raiseBuildingUnoccupiedEvent
+			}
+			on {
+				new {
+					event = events.personEntersBuilding
+					target = "occupied"
+				}
+			}
+		}
+
+		new {
+			name = "occupied"
+			entry {
+				incrementPeopleCount
+				raiseBuildingOccupiedEvent
+			}
+			on {
+				new {
+					event = events.personLeavesBuilding
+					actions { decrementPeopleCount }
+					target = "unoccupied"
+					guard { noPersonInBuilding }
+				}
+
+				new {
+					event = events.personEntersBuilding
+					actions { incrementPeopleCount }
+				}
+			}
+		}
+	}
+}

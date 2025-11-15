@@ -1,0 +1,294 @@
+import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
+
+import "events.pkl"
+
+const lampOnAction = new Csml.InvokeActionDescription {
+	serviceType = "lampOn"
+}
+
+const lampOffAction = new Csml.InvokeActionDescription {
+	serviceType = "lampOff"
+}
+
+const radiatorOnAction = new Csml.InvokeActionDescription {
+	serviceType = "radiatorOn"
+}
+
+const radiatorOffAction = new Csml.InvokeActionDescription {
+	serviceType = "radiatorOff"
+}
+
+class DishwasherStateMachine extends ApplianceStateMachine {
+	name = "dishwasher"
+	localContext {
+		variables {
+			new {
+				name = "cycle"
+				value = "0"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			on {
+				new {
+					event = events.dishwasherOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			on {
+				new {
+					event = events.dishwasherOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class RefrigeratorStateMachine extends ApplianceStateMachine {
+	name = "refrigerator"
+	localContext {
+		variables {
+			new {
+				name = "temperature"
+				value = "4"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			on {
+				new {
+					event = events.refrigeratorOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			on {
+				new {
+					event = events.refrigeratorOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class WashingMachineStateMachine extends ApplianceStateMachine {
+	name = "washing_machine"
+	localContext {
+		variables {
+			new {
+				name = "cycle"
+				value = "0"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			on {
+				new {
+					event = events.washingMachineOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			on {
+				new {
+					event = events.washingMachineOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class OvenStateMachine extends ApplianceStateMachine {
+	name = "oven"
+	localContext {
+		variables {
+			new {
+				name = "temperature"
+				value = "0"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			on {
+				new {
+					event = events.ovenOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			on {
+				new {
+					event = events.ovenOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class TelevisionStateMachine extends ApplianceStateMachine {
+	name = "television"
+	localContext {
+		variables {
+			new {
+				name = "channel"
+				value = "1"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			on {
+				new {
+					event = events.tvOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			on {
+				new {
+					event = events.tvOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class FireDetectorStateMachine extends ApplianceStateMachine {
+	name = "fire_detector"
+	states {
+		new {
+			name = "normal"
+			initial = true
+			on {
+				new {
+					event = events.fireDetected
+					target = "alarm"
+				}
+			}
+		}
+		new {
+			name = "alarm"
+			on {
+				new {
+					event = events.fireCleared
+					target = "normal"
+				}
+			}
+		}
+	}
+}
+
+class LampStateMachine extends ApplianceStateMachine {
+	name = "lamp"
+	localContext {
+		variables {
+			new {
+				name = "brightness"
+				value = "100"
+			}
+		}
+	}
+	states {
+		new {
+			name = "off"
+			initial = true
+			entry { lampOffAction }
+			on {
+				new {
+					event = events.lampOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			entry { lampOnAction }
+			on {
+				new {
+					event = events.lampOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class RadiatorStateMachine extends ApplianceStateMachine {
+	name = "radiator"
+	localContext {
+		variables {
+			new {
+				name = "temperature"
+				value = "20"
+			}
+		}
+	}
+
+	states {
+		new {
+			name = "off"
+			initial = true
+			entry { radiatorOffAction }
+			on {
+				new {
+					event = events.radiatorOn
+					target = "on"
+				}
+			}
+		}
+		new {
+			name = "on"
+			entry { radiatorOnAction }
+			on {
+				new {
+					event = events.radiatorOff
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+open class ApplianceStateMachine extends Csml.StateMachineDescription {
+	name = "appliance"
+	states {
+		new {
+			name = "off"
+			initial = true
+		}
+
+		new {
+			name = "on"
+		}
+	}
+}
