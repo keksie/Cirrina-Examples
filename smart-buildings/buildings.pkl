@@ -18,7 +18,9 @@ class SmallHouseStateMachine extends BuildingStateMachine {
 
 		new floors.FloorStateMachine {
 			name = "first_floor"
-			localContext.variables.floor = "1"
+			localContext.variables.floor {
+				value = "1"
+			}
 			stateMachines {
 				new rooms.HallwayStateMachine {}
 				new rooms.BedroomStateMachine {}
