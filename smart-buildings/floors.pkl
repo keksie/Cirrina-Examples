@@ -59,7 +59,7 @@ class FloorStateMachine extends Csml.StateMachineDescription {
 
 	states {
 		new {
-			name = "unoccupied"
+			name = "floor_unoccupied"
 			initial = true
 			entry {
 				resetPeopleCount
@@ -68,13 +68,13 @@ class FloorStateMachine extends Csml.StateMachineDescription {
 			on {
 				new {
 					event = events.personEntersFloor
-					target = "occupied"
+					target = "floor_occupied"
 				}
 			}
 		}
 
 		new {
-			name = "occupied"
+			name = "floor_occupied"
 			entry {
 				incrementPeopleCount
 				raiseFloorOccupiedEvent
@@ -83,7 +83,7 @@ class FloorStateMachine extends Csml.StateMachineDescription {
 				new {
 					event = events.personLeavesFloor
 					actions { decrementPeopleCount }
-					target = "unoccupied"
+					target = "floor_unoccupied"
 					guards { noPersonInFloor }
 				}
 

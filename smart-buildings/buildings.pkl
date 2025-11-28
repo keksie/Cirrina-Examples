@@ -127,7 +127,7 @@ open class BuildingStateMachine extends Csml.StateMachineDescription {
 
 	states {
 		new {
-			name = "unoccupied"
+			name = "building_unoccupied"
 			initial = true
 			entry {
 				resetPeopleCount
@@ -136,13 +136,13 @@ open class BuildingStateMachine extends Csml.StateMachineDescription {
 			on {
 				new {
 					event = events.personEntersBuilding
-					target = "occupied"
+					target = "building_occupied"
 				}
 			}
 		}
 
 		new {
-			name = "occupied"
+			name = "building_occupied"
 			entry {
 				incrementPeopleCount
 				raiseBuildingOccupiedEvent
@@ -151,7 +151,7 @@ open class BuildingStateMachine extends Csml.StateMachineDescription {
 				new {
 					event = events.personLeavesBuilding
 					actions { decrementPeopleCount }
-					target = "unoccupied"
+					target = "building_unoccupied"
 					guards { noPersonInBuilding }
 				}
 

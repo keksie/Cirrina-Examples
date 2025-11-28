@@ -115,7 +115,7 @@ open class RoomStateMachine extends Csml.StateMachineDescription {
 
 	states {
 		new {
-			name = "unoccupied"
+			name = "room_unoccupied"
 			initial = true
 			entry {
 				resetPeopleCount
@@ -124,12 +124,12 @@ open class RoomStateMachine extends Csml.StateMachineDescription {
 			on {
 				new {
 					event = events.personEnters
-					target = "occupied"
+					target = "room_occupied"
 				}
 			}
 		}
 		new {
-			name = "occupied"
+			name = "room_occupied"
 			entry {
 				incrementPeopleCount
 				raiseRoomOccupiedEvent
@@ -138,7 +138,7 @@ open class RoomStateMachine extends Csml.StateMachineDescription {
 				new {
 					event = events.personLeaves
 					actions { decrementPeopleCount }
-					target = "unoccupied"
+					target = "room_unoccupied"
 					guards { noPersonInRoom }
 				}
 				new {
