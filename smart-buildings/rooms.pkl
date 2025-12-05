@@ -2,6 +2,7 @@ import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/ref
 
 import "events.pkl"
 import "appliances.pkl"
+import "utility.pkl"
 
 class BathroomStateMachine extends FireDetectorRoomStateMachine {
 	name = "bathroom"
@@ -31,7 +32,7 @@ class KitchenStateMachine extends RoomStateMachine {
 }
 
 class LivingRoomStateMachine extends FireDetectorRoomStateMachine {
-	name = "living_room"
+	name = "livingroom"
 	stateMachines {
 		new appliances.RadiatorStateMachine {}
 		new appliances.LampStateMachine {}
@@ -60,90 +61,30 @@ open class FireDetectorRoomStateMachine extends RoomStateMachine {
 	name = "fire_detector_room"
 	stateMachines {
 		new appliances.FireDetectorStateMachine {}
+		new appliances.SirenStateMachine {}
 	}
 }
 
-const noPersonInRoom = new Csml.Guard {
-	expression = "peopleCount == 0"
-}
-
-const incrementPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "peopleCount + 1"
-	}
-}
-
-const decrementPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "peopleCount - 1"
-	}
-}
-
-const resetPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "0"
-	}
-}
-
-const raiseRoomOccupiedEvent = new Csml.RaiseAction {
-	event {
-		name    = events.roomOccupied
-		channel = "global"
-	}
-}
-
-const raiseRoomUnoccupiedEvent = new Csml.RaiseAction {
-	event {
-		name    = events.roomUnoccupied
-		channel = "global"
-	}
-}
-
-open class RoomStateMachine extends Csml.StateMachineDescription {
+open class RoomStateMachine extends utility.OccupancyStateMachine {
 	name = "room"
-	localContext {
-		variables {
-			new {
-				name = "peopleCount"
-				value = "0"
-			}
-		}
-	}
-
 	states {
-		new {
-			name = "room_unoccupied"
-			initial = true
+		[0] {
 			entry {
-				resetPeopleCount
-				raiseRoomUnoccupiedEvent
-			}
-			on {
-				new {
-					event = events.personEnters
-					target = "room_occupied"
+				new Csml.RaiseAction {
+					event {
+						name = events.roomUnoccupied
+						channel = "global"
+					}
 				}
 			}
 		}
-		new {
-			name = "room_occupied"
+		[1] {
 			entry {
-				incrementPeopleCount
-				raiseRoomOccupiedEvent
-			}
-			on {
-				new {
-					event = events.personLeaves
-					actions { decrementPeopleCount }
-					target = "room_unoccupied"
-					guards { noPersonInRoom }
-				}
-				new {
-					event = events.personEnters
-					actions { incrementPeopleCount }
+				new Csml.RaiseAction {
+					event {
+						name = events.roomOccupied
+						channel = "global"
+					}
 				}
 			}
 		}

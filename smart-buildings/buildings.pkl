@@ -38,19 +38,6 @@ class SmallHouseStateMachine extends BuildingStateMachine {
 	}
 }
 
-class GraduallyGrowingMachine extends BuildingStateMachine {
-	name = "growing"
-	stateMachines {
-		new floors.FloorStateMachine {
-			stateMachines {
-				new rooms.BedroomStateMachine {
-					name = "master_bedroom"
-				}
-			}
-		}
-	}
-}
-
 class FlatStateMachine extends BuildingStateMachine {
 	name = "flat"
 	stateMachines {

@@ -18,6 +18,26 @@ const radiatorOffAction = new Csml.InvokeActionDescription {
 	serviceType = "radiatorOff"
 }
 
+const sirenOnAction = new Csml.InvokeActionDescription {
+	serviceType = "sirenOn"
+}
+
+const sirenOffAction = new Csml.InvokeActionDescription {
+	serviceType = "sirenOff"
+}
+
+const sirenTestAction = new Csml.InvokeActionDescription {
+	serviceType = "sirenTest"
+}
+
+const refrigeratorOnAction = new Csml.InvokeActionDescription {
+	serviceType = "refrigeratorOn"
+}
+
+const refrigeratorOffAction = new Csml.InvokeActionDescription {
+	serviceType = "refrigeratorOff"
+}
+
 class DishwasherStateMachine extends ApplianceStateMachine {
 	name = "dishwasher"
 	localContext {
@@ -29,22 +49,17 @@ class DishwasherStateMachine extends ApplianceStateMachine {
 		}
 	}
 	states {
-		new {
-			name = "dishwasher_off"
-			initial = true
+		[0] {
 			on {
-				new {
+				[0] {
 					event = events.dishwasherOn
-					target = "dishwasher_on"
 				}
 			}
 		}
-		new {
-			name = "dishwasher_on"
+		[1] {
 			on {
-				new {
+				[0] {
 					event = events.dishwasherOff
-					target = "dishwasher_off"
 				}
 			}
 		}
@@ -62,22 +77,20 @@ class RefrigeratorStateMachine extends ApplianceStateMachine {
 		}
 	}
 	states {
-		new {
-			name = "refrigerator_off"
-			initial = true
-			on {
+		[0] {
+			entry { refrigeratorOffAction }
+			on  = new {}
+			always { // always switch fridges on if they are off
 				new {
-					event = events.refrigeratorOn
-					target = "refrigerator_on"
+					target = "on"
 				}
 			}
 		}
-		new {
-			name = "refrigerator_on"
+		[1] {
+			entry { refrigeratorOnAction }
 			on {
-				new {
+				[0] {
 					event = events.refrigeratorOff
-					target = "refrigerator_off"
 				}
 			}
 		}
@@ -95,22 +108,17 @@ class WashingMachineStateMachine extends ApplianceStateMachine {
 		}
 	}
 	states {
-		new {
-			name = "washing_machine_off"
-			initial = true
+		[0] {
 			on {
-				new {
+				[0] {
 					event = events.washingMachineOn
-					target = "washing_machine_on"
 				}
 			}
 		}
-		new {
-			name = "washing_machine_on"
+		[1] {
 			on {
-				new {
+				[0] {
 					event = events.washingMachineOff
-					target = "washing_machine_off"
 				}
 			}
 		}
@@ -128,22 +136,17 @@ class OvenStateMachine extends ApplianceStateMachine {
 		}
 	}
 	states {
-		new {
-			name = "oven_off"
-			initial = true
+		[0] {
 			on {
-				new {
+				[0] {
 					event = events.ovenOn
-					target = "oven_on"
 				}
 			}
 		}
-		new {
-			name = "oven_on"
+		[1] {
 			on {
-				new {
+				[0] {
 					event = events.ovenOff
-					target = "oven_off"
 				}
 			}
 		}
@@ -161,45 +164,80 @@ class TelevisionStateMachine extends ApplianceStateMachine {
 		}
 	}
 	states {
-		new {
-			name = "television_off"
-			initial = true
+		[0] {
 			on {
-				new {
+				[0] {
 					event = events.tvOn
-					target = "television_on"
 				}
 			}
 		}
-		new {
-			name = "television_on"
+		[1] {
 			on {
-				new {
+				[0] {
 					event = events.tvOff
-					target = "television_off"
 				}
 			}
 		}
 	}
 }
 
-class FireDetectorStateMachine extends ApplianceStateMachine {
-	name = "fire_detector"
+class SirenStateMachine extends ApplianceStateMachine { // examples an addition to the appliance state machines
+	name = "siren"
 	states {
-		new {
-			name = "fire_detector_normal"
-			initial = true
+		[0] { // this is "off" state
+			entry { sirenOffAction }
 			on {
-				new {
+				[0] { // target "on" transition
 					event = events.fireDetected
-					target = "fire_detector_alarm"
+				}
+				new {
+					event = events.startTestFireAlarm
+					target = "siren_test"
 				}
 			}
 		}
-		new {
-			name = "fire_detector_alarm"
+		[1] { // this is "on" state
+			entry { sirenOnAction }
+			on {
+				[0] { // target "off" transition
+					event = events.fireCleared
+				}
+			}
+		}
+		new { // Addition to ApplianceStateMachine states
+			name = "siren_test"
+			entry { sirenTestAction }
 			on {
 				new {
+					event = events.fireDetected
+					target = "on"
+				}
+				new {
+					event = events.stopTestFireAlarm
+					target = "off"
+				}
+			}
+		}
+	}
+}
+
+class FireDetectorStateMachine extends ApplianceStateMachine { // examples an inplace override with an entirely new state-object
+	name = "fire_detector"
+	states {
+		[0] = new { // this is "off" state -- with entirely new state-object (this requires all fields (no inheritance))
+			name = "fire_detector_normal"
+			initial = true
+			on {
+				new { // target "on" transition
+					event = events.fireDetected
+					target = "fire_detector_alarm" // overwritten name => overwrite target!
+				}
+			}
+		}
+		[1] = new { // this is "on" state -- with entirely new state-object (this requires all fields (no inheritance))
+			name = "fire_detector_alarm"
+			on {
+				new { // target "off" transition
 					event = events.fireCleared
 					target = "fire_detector_normal"
 				}
@@ -208,42 +246,7 @@ class FireDetectorStateMachine extends ApplianceStateMachine {
 	}
 }
 
-class LampStateMachine extends ApplianceStateMachine {
-	name = "lamp"
-	localContext {
-		variables {
-			new {
-				name = "brightness"
-				value = "100"
-			}
-		}
-	}
-	states {
-		new {
-			name = "lamp_off"
-			initial = true
-			entry { lampOffAction }
-			on {
-				new {
-					event = events.lampOn
-					target = "lamp_on"
-				}
-			}
-		}
-		new {
-			name = "lamp_on"
-			entry { lampOnAction }
-			on {
-				new {
-					event = events.lampOff
-					target = "lamp_off"
-				}
-			}
-		}
-	}
-}
-
-class RadiatorStateMachine extends ApplianceStateMachine {
+class RadiatorStateMachine extends ApplianceStateMachine { // examples an inplace override of the states
 	name = "radiator"
 	localContext {
 		variables {
@@ -255,24 +258,50 @@ class RadiatorStateMachine extends ApplianceStateMachine {
 	}
 
 	states {
-		new {
-			name = "radiator_off"
-			initial = true
+		[0] { // this is "off" state
 			entry { radiatorOffAction }
 			on {
-				new {
+				[0] { // target "on" transition
 					event = events.radiatorOn
-					target = "radiator_on"
 				}
 			}
 		}
-		new {
-			name = "radiator_on"
+		[1] { // this is "on" state
 			entry { radiatorOnAction }
 			on {
-				new {
+				[0] { // target "off" transition
 					event = events.radiatorOff
-					target = "radiator_off"
+				}
+			}
+		}
+	}
+}
+
+class LampStateMachine extends ApplianceStateMachine { // examples an inplace override of the states
+	name = "lamp"
+	localContext {
+		variables {
+			new {
+				name = "brightness"
+				value = "100"
+			}
+		}
+	}
+
+	states {
+		[0] { // this is "off" state
+			entry { lampOffAction }
+			on {
+				[0] { // target "on" transition
+					event = events.lampOn
+				}
+			}
+		}
+		[1] { // this is "on" state
+			entry { lampOnAction }
+			on {
+				[0] { // target "off" transition
+					event = events.lampOff
 				}
 			}
 		}
@@ -285,10 +314,22 @@ open class ApplianceStateMachine extends Csml.StateMachineDescription {
 		new {
 			name = "off"
 			initial = true
+			on {
+				new {
+					event = "applianceOn"
+					target = "on"
+				}
+			}
 		}
 
 		new {
 			name = "on"
+			on {
+				new {
+					event = "applianceOff"
+					target = "off"
+				}
+			}
 		}
 	}
 }

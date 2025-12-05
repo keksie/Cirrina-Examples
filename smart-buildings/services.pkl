@@ -37,4 +37,49 @@ bindings {
 		endPoint = "/radiator/off"
 		method = "POST"
 	}
+	new HttpServiceImplementationBinding {
+		name = "sirenOn"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/siren/on"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "sirenOff"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/siren/off"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "sirenTest"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/siren/test"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "refrigeratorOn"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/refrigerator/on"
+		method = "POST"
+	}
+	new HttpServiceImplementationBinding {
+		name = "refrigeratorOff"
+		`local` = false
+		scheme = "http"
+		host = "ngsb-services"
+		port = 8000
+		endPoint = "/refrigerator/off"
+		method = "POST"
+	}
 }

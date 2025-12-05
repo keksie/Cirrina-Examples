@@ -1,31 +1,7 @@
 import "https://raw.githubusercontent.com/CollaborativeStateMachines/Cirrina/refs/heads/develop/src/main/resources/pkl/csm/Csml.pkl"
 
 import "events.pkl"
-
-const noPersonInFloor = new Csml.Guard {
-	expression = "peopleCount == 0"
-}
-
-const incrementPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "peopleCount + 1"
-	}
-}
-
-const decrementPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "peopleCount - 1"
-	}
-}
-
-const resetPeopleCount = new Csml.AssignAction {
-	variable = new {
-		name = "peopleCount"
-		value = "0"
-	}
-}
+import "utility.pkl"
 
 const raiseFloorOccupiedEvent = new Csml.RaiseAction {
 	event {
@@ -41,7 +17,7 @@ const raiseFloorUnoccupiedEvent = new Csml.RaiseAction {
 	}
 }
 
-class FloorStateMachine extends Csml.StateMachineDescription {
+class FloorStateMachine extends utility.OccupancyStateMachine {
 	name = "ground_floor"
 	localContext {
 		variables {
@@ -49,47 +25,32 @@ class FloorStateMachine extends Csml.StateMachineDescription {
 				name = "floor"
 				value = "0"
 			}
-
-			new {
-				name = "peopleCount"
-				value = "0"
-			}
 		}
 	}
 
 	states {
-		new {
-			name = "floor_unoccupied"
-			initial = true
+		[0] {
 			entry {
-				resetPeopleCount
 				raiseFloorUnoccupiedEvent
 			}
 			on {
-				new {
+				[0] {
 					event = events.personEntersFloor
-					target = "floor_occupied"
 				}
 			}
 		}
 
-		new {
-			name = "floor_occupied"
+		[1] {
 			entry {
-				incrementPeopleCount
 				raiseFloorOccupiedEvent
 			}
 			on {
-				new {
+				[0] {
 					event = events.personLeavesFloor
-					actions { decrementPeopleCount }
-					target = "floor_unoccupied"
-					guards { noPersonInFloor }
 				}
 
-				new {
+				[1] {
 					event = events.personEntersFloor
-					actions { incrementPeopleCount }
 				}
 			}
 		}
